@@ -14,7 +14,7 @@ namespace PlaywrightTest.Tests
         [TestCase("firefox")]
         public async Task SearchAndNavigateToPlaywrightDocs(string browserType)
         {
-            var page = await Playwright.CreatePageAsync(browserType, new BrowserTypeLaunchOptions { Headless = false });
+            var page = await Playwright.CreatePageAsync(browserType, new BrowserTypeLaunchOptions { Headless = true });
 
             var googleHomePage = new GoogleHomePage(page);
             var googleSearchResultsPage = new GoogleSearchResultsPage(page);
@@ -31,8 +31,6 @@ namespace PlaywrightTest.Tests
             Assert.IsTrue(numberOfResults > 0, "No search results found.");
 
             await page.RunAndWaitForNavigationAsync(async () => await googleSearchResultsPage.ClickFirstResultAsync());
-
-            await page.WaitForLoadStateAsync(LoadState.Load);
 
             Assert.That(page.Url, Is.EqualTo("https://playwright.dev/"), $"Did not navigate to the Playwright docs website. Navigated to link: {page.Url}");
 
