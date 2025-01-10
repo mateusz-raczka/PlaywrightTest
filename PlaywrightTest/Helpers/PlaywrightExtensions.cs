@@ -2,6 +2,7 @@
 
 namespace PlaywrightTest.Helpers
 {
+    //Really good browser factory
     public static class PlaywrightExtensions
     {
         public static async Task<IBrowser> LaunchBrowserAsync(this IPlaywright playwright, string browserType, BrowserTypeLaunchOptions browserTypeLaunchOptions)
@@ -14,6 +15,7 @@ namespace PlaywrightTest.Helpers
                 _ => throw new ArgumentException($"Unsupported browser type: {browserType}")
             };
         }
+
         public static async Task<IPage> CreatePageAsync(this IPlaywright playwright, string browserType, BrowserTypeLaunchOptions options)
         {
             var browser = await playwright.LaunchBrowserAsync(browserType, options);
