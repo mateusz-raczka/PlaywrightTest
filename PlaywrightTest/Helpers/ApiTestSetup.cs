@@ -8,7 +8,7 @@ namespace PlaywrightTests.Tests
         protected abstract string APIBaseUrl { get; }
 
         [SetUp]
-        public async Task SetUp()
+        public async Task GlobalSetUp()
         {
             try
             {
@@ -25,7 +25,7 @@ namespace PlaywrightTests.Tests
         }
 
         [TearDown]
-        public async Task TearDown()
+        public async Task GlobalTearDown()
         {
             await _request.DisposeAsync();
         }

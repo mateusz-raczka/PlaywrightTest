@@ -16,7 +16,7 @@ namespace PlaywrightTests.Clients
 
         public async Task<IAPIResponse> CreateUserAsync(object newUser)
         {
-            return await _request.PostAsync($"{_apiBaseUrl}/users", new APIRequestContextOptions
+            return await _request.PostAsync(_apiBaseUrl + "users", new APIRequestContextOptions
             {
                 DataObject = newUser,
                 Headers = new Dictionary<string, string>
@@ -27,7 +27,7 @@ namespace PlaywrightTests.Clients
         }
         public async Task<IAPIResponse> GetUsersAsync()
         {
-            return await _request.GetAsync($"{_apiBaseUrl}/users");
+            return await _request.GetAsync(_apiBaseUrl + "users");
         }
     }
 }

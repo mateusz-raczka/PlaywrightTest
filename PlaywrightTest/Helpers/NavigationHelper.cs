@@ -20,7 +20,6 @@ namespace PlaywrightTests.Helpers
             }
 
             await page.GotoAsync(url);
-            await page.WaitForURLAsync(url);
 
             var isRedirected = page.Url == url;
 

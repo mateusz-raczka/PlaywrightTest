@@ -16,7 +16,7 @@ namespace PlaywrightTests.Pages
         #region Methods
         public async Task AcceptCookiesAsync()
         {
-            await _page.AddLocatorHandlerAsync(AcceptCookiesButton, async () =>
+            await _page.AddLocatorHandlerAsync(AcceptCookiesButton,async () =>
             {
                 await AcceptCookiesButton.ClickAsync();
             });

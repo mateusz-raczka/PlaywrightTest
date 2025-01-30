@@ -4,7 +4,6 @@ using PlaywrightTests.Config;
 namespace PlaywrightTests.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
     public class JsonPlaceholderApiTests : ApiTestSetup
     {
         protected override string APIBaseUrl => ConfigManager.GetAPITestBaseUrl(typeof(JsonPlaceholderApiClient).Name);

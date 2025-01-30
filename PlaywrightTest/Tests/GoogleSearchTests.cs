@@ -13,7 +13,7 @@ namespace PlaywrightTests.Tests
         private PlaywrightDocsPage _playwrightDocsPage;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             _googleHomePage = new GoogleHomePage(Page);
             _googleSearchResultsPage = new GoogleSearchResultsPage(Page);
