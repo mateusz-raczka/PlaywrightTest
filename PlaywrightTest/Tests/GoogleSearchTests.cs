@@ -1,44 +1,53 @@
-﻿using Microsoft.Playwright;
-using PlaywrightTest.Pages;
-using PlaywrightTest.Helpers;
+﻿using PlaywrightTests.Helpers;
+using PlaywrightTests.Pages;
 
-namespace PlaywrightTest.Tests
+namespace PlaywrightTests.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     public class GoogleSearchTests : TestSetup
     {
+        private GoogleHomePage _googleHomePage;
+        private GoogleSearchResultsPage _googleSearchResultsPage;
+        private PlaywrightHomePage _playwrightHomePage;
+        private PlaywrightDocsPage _playwrightDocsPage;
+
+        [SetUp]
+        public async Task SetUp()
+        {
+            _googleHomePage = new GoogleHomePage(Page);
+            _googleSearchResultsPage = new GoogleSearchResultsPage(Page);
+            _playwrightHomePage = new PlaywrightHomePage(Page);
+            _playwrightDocsPage = new PlaywrightDocsPage(Page);
+        }
+
         [Test]
-        [TestCase("chromium")]
-        [TestCase("webkit")]
-        [TestCase("firefox")]
+        [TestCaseSource(nameof(Browsers))]
         public async Task SearchAndNavigateToPlaywrightDocs(string browserType)
         {
-            var page = await Playwright.CreatePageAsync(browserType, new BrowserTypeLaunchOptions { Headless = true });
+            var successfullyRedirected = await Page.GotoPageAsync<GoogleHomePage>();
 
-            var googleHomePage = new GoogleHomePage(page);
-            var googleSearchResultsPage = new GoogleSearchResultsPage(page);
-            var playwrightHomePage = new PlaywrightHomePage(page);
-            var playwrightDocsPage = new PlaywrightDocsPage(page);
+            Assert.IsTrue(successfullyRedirected, "Did not successfully navigate to google home page");
 
-            await page.GotoAsync("https://www.google.pl");
+            await _googleHomePage.AcceptCookiesAsync();
 
-            await googleHomePage.AcceptCookiesAsync();
+            await _googleHomePage.SearchAsync("playwright documentation");
 
-            await page.RunAndWaitForNavigationAsync(async () => await googleHomePage.SearchAsync("playwright documentation"));
-
-            var numberOfResults = await googleSearchResultsPage.GetNumberOfResultsAsync();
+            var numberOfResults = await _googleSearchResultsPage.GetNumberOfResultsAsync();
             Assert.IsTrue(numberOfResults > 0, "No search results found.");
 
-            await page.RunAndWaitForNavigationAsync(async () => await googleSearchResultsPage.ClickFirstResultAsync());
+            await _googleSearchResultsPage.ClickFirstResultAsync();
 
-            Assert.That(page.Url, Is.EqualTo("https://playwright.dev/"), $"Did not navigate to the Playwright docs website. Navigated to link: {page.Url}");
+            Assert.That(Page.Url, Is.EqualTo(NavigationHelper.GetPageUrl<PlaywrightHomePage>()), $"Did not navigate to the Playwright docs website. Navigated to link: {Page.Url}");
 
-            await page.RunAndWaitForNavigationAsync(async () => await playwrightHomePage.ClickDocsLinkAsync());
+            await _playwrightHomePage.ClickDocsLinkAsync();
 
-            Assert.IsTrue(await playwrightDocsPage.IsVisibleInstallationLinkAsync(), "Installation link is not visible.");
-            Assert.IsTrue(await playwrightDocsPage.IsVisibledWritingTestsLinkAsync(), "Writing tests link is not visible.");
-            Assert.IsTrue(await playwrightDocsPage.IsVisibleTraceViewerLinkAsync(), "Trace viewer link is not visible.");
+            Assert.Multiple(async () =>
+            {
+                Assert.IsTrue(await _playwrightDocsPage.IsVisibleInstallationLinkAsync(), "Installation link is not visible.");
+                Assert.IsTrue(await _playwrightDocsPage.IsVisibledWritingTestsLinkAsync(), "Writing tests link is not visible.");
+                Assert.IsTrue(await _playwrightDocsPage.IsVisibleTraceViewerLinkAsync(), "Trace viewer link is not visible.");
+            });
         }
     }
 }

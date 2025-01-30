@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
+using PlaywrightTests.Helpers;
 
-namespace PlaywrightTest.Pages
+namespace PlaywrightTests.Pages
 {
     public class PlaywrightDocsPage : PageBase
     {
@@ -8,7 +9,7 @@ namespace PlaywrightTest.Pages
 
         #region Locators
         private ILocator InstallationLink => _page.GetByRole(AriaRole.Link, new() { NameString = "Installation" });
-        private ILocator WritingTestsLink => _page.GetByRole(AriaRole.Link, new() { NameString = "Writing tests" });
+        private ILocator WritingTestsLink => _page.GetByRole(AriaRole.Link, new() { NameString = "Writing tests" }).First;
         private ILocator TraceViewerLink => _page.GetByRole(AriaRole.Link, new() { NameString = "Trace viewer" }).First;
         #endregion
 
@@ -16,7 +17,7 @@ namespace PlaywrightTest.Pages
         public async Task<bool> IsVisibleInstallationLinkAsync()
         {
             await InstallationLink.WaitForAsync();
-            
+
             return await InstallationLink.IsVisibleAsync();
         }
         public async Task<bool> IsVisibledWritingTestsLinkAsync()

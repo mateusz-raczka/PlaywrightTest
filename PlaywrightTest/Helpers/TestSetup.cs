@@ -1,22 +1,19 @@
 ﻿using Microsoft.Playwright;
-using PlaywrightDriver = Microsoft.Playwright.Playwright;
+using PlaywrightTests.Config;
 
-namespace PlaywrightTest.Helpers
+namespace PlaywrightTests.Helpers
 {
-    public class TestSetup
+    public abstract class TestSetup : PlaywrightTest
     {
-        protected IPlaywright Playwright;
+        protected static readonly string[] Browsers = ConfigManager.PlaywrightSettings.Browsers;
+        protected IPage Page { get; set; }
 
-        [OneTimeSetUp]
-        public async Task GlobalSetUp()
+        [SetUp]
+        public async Task SetUp()
         {
-            Playwright = await PlaywrightDriver.CreateAsync();
-        }
+            var browserType = TestContext.CurrentContext.Test.Arguments[0].ToString();
 
-        [OneTimeTearDown]
-        public void GlobalTearDown()
-        {
-            Playwright.Dispose();
+            Page = await Playwright.CreatePageAsync(browserType);
         }
     }
 }

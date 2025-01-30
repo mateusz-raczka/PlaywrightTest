@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace PlaywrightTest.Pages
+namespace PlaywrightTests.Pages
 {
     public class PageBase
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
+using PlaywrightTests.Helpers;
 
-namespace PlaywrightTest.Pages
+namespace PlaywrightTests.Pages
 {
     public class GoogleHomePage : PageBase
     {
@@ -8,17 +9,24 @@ namespace PlaywrightTest.Pages
 
         #region Locators
         private ILocator SearchTextInput => _page.Locator("[aria-label='Szukaj']");
-        private ILocator AcceptCookiesButton => _page.Locator("#L2AGLb");
-        private ILocator SearchButton => _page.Locator("[aria-label='Szukaj w Google']").First;
+        private ILocator AcceptCookiesButton => _page.GetByRole(AriaRole.Button, new() { Name = "Zaakceptuj wszystko" });
+        private ILocator SearchButton => _page.GetByLabel("Szukaj w Google").First;
         #endregion
 
         #region Methods
-        public async Task AcceptCookiesAsync() => await AcceptCookiesButton.ClickAsync();
+        public async Task AcceptCookiesAsync()
+        {
+            await _page.AddLocatorHandlerAsync(AcceptCookiesButton, async () =>
+            {
+                await AcceptCookiesButton.ClickAsync();
+            });
+        }
 
         public async Task SearchAsync(string query)
         {
             await SearchTextInput.FillAsync(query);
-            await SearchButton.ClickAsync();
+
+            await _page.RunAndWaitForNavigationAsync(async () => await SearchButton.ClickAsync());
         }
         #endregion
     }
